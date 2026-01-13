@@ -26,7 +26,7 @@ import { liveInspirationSources } from "./data/inspiration.js";
 const server = new Server(
     {
         name: "design-guidance-server",
-        version: "1.0.0",
+        version: "1.0.7",
     },
     {
         capabilities: {

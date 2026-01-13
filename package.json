@@ -1,6 +1,6 @@
 {
   "name": "page-design-guide-mcp",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "MCP server providing modern web design guidance, color psychology, typography, layout patterns, and UI best practices for AI assistants",
   "type": "module",
   "main": "build/index.js",
@@ -8,9 +8,7 @@
     "page-design-guide": "./build/index.js"
   },
   "files": [
-    "build/index.js",
-    "build/index.js.map",
-    "build/index.js.LICENSE.txt"
+    "build"
   ],
   "scripts": {
     "build": "tsc",

@@ -17,6 +17,7 @@ import { responsiveGuidance } from "./data/responsiveGuidance.js";
 import { modernTrends } from "./data/modernTrends.js";
 import { accessibilityGuidance } from "./data/accessibilityGuidance.js";
 import { animationGuidance } from "./data/animationGuidance.js";
+import { liveInspirationSources } from "./data/inspiration.js";
 
 // ==========================================
 // MCP SERVER IMPLEMENTATION
@@ -145,6 +146,19 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                     type: "object",
                     properties: {},
                 },
+            },
+            {
+                name: "get_inspiration_by_mood",
+                description: "Returns curated inspiration sources (websites, component libraries) based on desired mood or style.",
+                inputSchema: {
+                    type: "object",
+                    properties: {
+                        mood: {
+                            type: "string",
+                            description: "The mood or style to search for (e.g., 'minimal', 'dark', 'animated'). Returns all if empty."
+                        }
+                    },
+                },
             }
         ],
     };
@@ -245,6 +259,33 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             return {
                 content: [{ type: "text", text: JSON.stringify(checklist, null, 2) }],
             };
+
+        case "get_inspiration_by_mood":
+             const mood = (args as any)?.mood?.toLowerCase();
+             if (!mood) {
+                 return {
+                     content: [{ type: "text", text: JSON.stringify(liveInspirationSources, null, 2) }],
+                 };
+             }
+
+             // Filter logic for inspirations
+             const filtered = {
+                 portfolios: liveInspirationSources.portfolios.filter(p =>
+                     p.categories.some(c => c.includes(mood)) ||
+                     p.bestFor.toLowerCase().includes(mood) ||
+                     p.name.toLowerCase().includes(mood)
+                 ),
+                 componentLibraries: Object.entries(liveInspirationSources.componentLibraries)
+                    .filter(([_, lib]) => lib.style.toLowerCase().includes(mood) || lib.components.some(c => c.includes(mood)))
+                    .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {}),
+                 realSiteExamples: Object.entries(liveInspirationSources.realSiteExamples)
+                    .filter(([_, site]) => site.inspireFrom.some(i => i.includes(mood)))
+                    .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {})
+             };
+
+             return {
+                 content: [{ type: "text", text: JSON.stringify(filtered, null, 2) }],
+             };
 
         default:
             throw new Error(`Unknown tool: ${name}`);

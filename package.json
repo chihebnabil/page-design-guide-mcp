@@ -1,0 +1,40 @@
+{
+  "name": "page-design-guide-mcp",
+  "version": "1.0.5",
+  "description": "MCP server providing modern web design guidance, color psychology, typography, layout patterns, and UI best practices for AI assistants",
+  "type": "module",
+  "main": "build/index.js",
+  "bin": {
+    "page-design-guide": "./build/index.js"
+  },
+  "files": [
+    "build/index.js",
+    "build/index.js.map",
+    "build/index.js.LICENSE.txt"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "prepare": "npm run build",
+    "start": "node build/index.js"
+  },
+  "keywords": [
+    "mcp",
+    "design",
+    "ui",
+    "ux",
+    "web-design",
+    "layout",
+    "color-scheme",
+    "typography",
+    "design-system"
+  ],
+  "author": "Chiheb Nabil",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.25.2"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.6",
+    "typescript": "^5.9.3"
+  }
+}

@@ -30,6 +30,9 @@
     "design-system"
   ],
   "author": "Chiheb Nabil",
+  "repository": {
+    "url": "https://github.com/chihebnabil/page-design-guide-mcp"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.25.2"
   },

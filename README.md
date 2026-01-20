@@ -15,20 +15,6 @@ An MCP (Model Context Protocol) server that provides design guidance to help LLM
 - [sparkles] **Modern Trends** - Current design trends and when to use them
 - [check] **Design Review** - Analyze design descriptions and get recommendations
 
-## Installation
-
-Install the package globally via npm:
-
-```bash
-npm install -g page-design-guide-mcp
-```
-
-Or install it locally in your project:
-
-```bash
-npm install page-design-guide-mcp
-```
-
 ## Setup with Claude Desktop
 
 Add this to your Claude Desktop configuration file:
@@ -63,6 +49,23 @@ Add this to your Claude Desktop configuration file:
 ```
 
 Replace `/absolute/path/to` with the actual path to your project's `node_modules` directory.
+
+## Setup with OpenCode
+
+Your `opencode.json` configuration file should include:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "page-design-guide": {
+      "type": "local",
+      "command": ["npx", "-y", "page-design-guide-mcp"],
+      "enabled": true
+    }
+  }
+}
+```
 
 ## Usage
 

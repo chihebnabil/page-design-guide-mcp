@@ -55,42 +55,72 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
             {
                 name: "get_modern_palettes",
-                description: "Returns trending 2026 color palette combinations with specific hex codes and usage examples.",
+                description: "Returns trending 2026 color palette combinations with specific hex codes and usage examples. Use category to filter by palette type.",
                 inputSchema: {
                     type: "object",
-                    properties: {},
+                    properties: {
+                        category: {
+                            type: "string",
+                            enum: ["warm", "cool", "monochromatic", "high-contrast", "pastel", "earth-tone"],
+                            description: "Filter by palette category. Returns all palettes if omitted."
+                        }
+                    },
                 },
             },
             {
                 name: "get_design_principles",
-                description: "Retrieves core UI/UX principles (hierarchy, whitespace, contrast) to ensure visual quality.",
+                description: "Retrieves core UI/UX principles (hierarchy, whitespace, contrast) to ensure visual quality. Filter by specific principle type.",
                 inputSchema: {
                     type: "object",
-                    properties: {},
+                    properties: {
+                        category: {
+                            type: "string",
+                            enum: ["hierarchy", "whitespace", "contrast", "visual-balance", "typography", "color-theory"],
+                            description: "Filter by design principle category. Returns all if omitted."
+                        }
+                    },
                 },
             },
             {
                 name: "get_layout_patterns",
-                description: "Returns standard layout patterns (F-pattern, Z-pattern, Bento Grid) and when to use them.",
+                description: "Returns standard layout patterns (F-pattern, Z-pattern, Bento Grid) and when to use them. Filter by specific pattern type.",
                 inputSchema: {
                     type: "object",
-                    properties: {},
+                    properties: {
+                        category: {
+                            type: "string",
+                            enum: ["f-pattern", "z-pattern", "bento-grid", "single-column", "grid-based", "asymmetric"],
+                            description: "Filter by layout pattern type. Returns all patterns if omitted."
+                        }
+                    },
                 },
             },
             {
                 name: "get_color_guidance",
-                description: "Returns color psychology, color scheme types, and modern palette examples.",
+                description: "Returns color psychology, color scheme types, and modern palette examples. Filter by specific color topic.",
                 inputSchema: {
                     type: "object",
-                    properties: {},
+                    properties: {
+                        category: {
+                            type: "string",
+                            enum: ["psychology", "accessibility", "combinations", "trends", "psychology", "schemes"],
+                            description: "Filter by color guidance topic. Returns all guidance if omitted."
+                        }
+                    },
                 },
             },
             {
                 name: "get_typography_guidance",
-                description: "Returns font hierarchy scales, font pairings, and readability best practices.",
+                description: "Returns font hierarchy scales, font pairings, and readability best practices. Filter by specific typography topic.",
                 inputSchema: {
                     type: "object",
-                    properties: {},
+                    properties: {
+                        category: {
+                            type: "string",
+                            enum: ["hierarchy", "pairings", "readability", "web-fonts", "spacing", "scaling"],
+                            description: "Filter by typography topic. Returns all guidance if omitted."
+                        }
+                    },
                 },
             },
             {
@@ -109,42 +139,72 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
             {
                 name: "get_responsive_guidance",
-                description: "Returns breakpoints, mobile-first principles, and touch target rules.",
+                description: "Returns breakpoints, mobile-first principles, and touch target rules. Filter by specific responsive topic.",
                 inputSchema: {
                     type: "object",
-                    properties: {},
+                    properties: {
+                        category: {
+                            type: "string",
+                            enum: ["breakpoints", "mobile-first", "touch-targets", "fluid-design", "viewport", "adaptation"],
+                            description: "Filter by responsive design topic. Returns all guidance if omitted."
+                        }
+                    },
                 },
             },
             {
                 name: "get_accessibility_guidance",
-                description: "Returns a11y standards regarding contrast, focus states, and semantic HTML.",
+                description: "Returns a11y standards regarding contrast, focus states, and semantic HTML. Filter by specific accessibility topic.",
                 inputSchema: {
                     type: "object",
-                    properties: {},
+                    properties: {
+                        category: {
+                            type: "string",
+                            enum: ["contrast", "focus-states", "semantic-html", "screen-readers", "aria", "keyboard-nav"],
+                            description: "Filter by accessibility topic. Returns all guidance if omitted."
+                        }
+                    },
                 },
             },
             {
                 name: "get_modern_trends",
-                description: "Returns current visual design trends and what trends to avoid.",
+                description: "Returns current visual design trends and what trends to avoid. Filter by specific trend category.",
                 inputSchema: {
                     type: "object",
-                    properties: {},
+                    properties: {
+                        category: {
+                            type: "string",
+                            enum: ["visual-trends", "avoid-these", "emerging", "typography", "layout", "color"],
+                            description: "Filter by trend category. Returns all trends if omitted."
+                        }
+                    },
                 },
             },
             {
                 name: "get_animation_guidance",
-                description: "Returns best practices for UI animation timing, easing, and purpose.",
+                description: "Returns best practices for UI animation timing, easing, and purpose. Filter by specific animation topic.",
                 inputSchema: {
                     type: "object",
-                    properties: {},
+                    properties: {
+                        category: {
+                            type: "string",
+                            enum: ["timing", "easing", "micro-interactions", "performance", "transitions", "physics"],
+                            description: "Filter by animation topic. Returns all guidance if omitted."
+                        }
+                    },
                 },
             },
             {
                 name: "get_holistic_design_review",
-                description: "Returns a comprehensive checklist of all design categories to review a user's concept.",
+                description: "Returns a comprehensive checklist of all design categories to review a user's concept. Filter to specific review area.",
                 inputSchema: {
                     type: "object",
-                    properties: {},
+                    properties: {
+                        category: {
+                            type: "string",
+                            enum: ["full-review", "principles", "accessibility", "responsive", "typography", "color"],
+                            description: "Filter to specific review area. Returns complete checklist if omitted."
+                        }
+                    },
                 },
             },
             {
@@ -187,26 +247,80 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             };
 
         case "get_modern_palettes":
+            const paletteCategory = (args as any)?.category;
+            if (paletteCategory) {
+                const filteredPalettes = modern2026Palettes.trendingCombinations.filter(
+                    p => p.name.toLowerCase().includes(paletteCategory.toLowerCase()) ||
+                         p.usage.toLowerCase().includes(paletteCategory.toLowerCase())
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify({ filtered: paletteCategory, palettes: filteredPalettes }, null, 2) }],
+                };
+            }
             return {
                 content: [{ type: "text", text: JSON.stringify(modern2026Palettes, null, 2) }],
             };
 
         case "get_design_principles":
+            const principleCategory = (args as any)?.category;
+            if (principleCategory) {
+                const filteredPrinciples = designPrinciples.filter(
+                    p => p.principle.toLowerCase().replace(/\s+/g, '-') === principleCategory.toLowerCase() ||
+                         p.principle.toLowerCase().includes(principleCategory.toLowerCase())
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify({ filtered: principleCategory, principles: filteredPrinciples }, null, 2) }],
+                };
+            }
             return {
                 content: [{ type: "text", text: JSON.stringify(designPrinciples, null, 2) }],
             };
 
         case "get_layout_patterns":
+            const layoutCategory = (args as any)?.category;
+            if (layoutCategory) {
+                const filteredLayouts = layoutPatterns.filter(
+                    l => l.name.toLowerCase().replace(/\s+/g, '-') === layoutCategory.toLowerCase() ||
+                         l.name.toLowerCase().includes(layoutCategory.toLowerCase())
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify({ filtered: layoutCategory, layouts: filteredLayouts }, null, 2) }],
+                };
+            }
             return {
                 content: [{ type: "text", text: JSON.stringify(layoutPatterns, null, 2) }],
             };
 
         case "get_color_guidance":
+            const colorCategory = (args as any)?.category;
+            if (colorCategory) {
+                const filteredColor: Record<string, any> = {};
+                for (const [key, value] of Object.entries(colorGuidance)) {
+                    if (key.toLowerCase().includes(colorCategory.toLowerCase())) {
+                        filteredColor[key] = value;
+                    }
+                }
+                return {
+                    content: [{ type: "text", text: JSON.stringify({ filtered: colorCategory, guidance: filteredColor }, null, 2) }],
+                };
+            }
             return {
                 content: [{ type: "text", text: JSON.stringify(colorGuidance, null, 2) }],
             };
 
         case "get_typography_guidance":
+            const typeCategory = (args as any)?.category;
+            if (typeCategory) {
+                const filteredType: Record<string, any> = {};
+                for (const [key, value] of Object.entries(typographyGuidance)) {
+                    if (key.toLowerCase().includes(typeCategory.toLowerCase())) {
+                        filteredType[key] = value;
+                    }
+                }
+                return {
+                    content: [{ type: "text", text: JSON.stringify({ filtered: typeCategory, guidance: filteredType }, null, 2) }],
+                };
+            }
             return {
                 content: [{ type: "text", text: JSON.stringify(typographyGuidance, null, 2) }],
             };
@@ -229,33 +343,104 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             };
 
         case "get_responsive_guidance":
+            const responsiveCategory = (args as any)?.category;
+            if (responsiveCategory) {
+                const filteredResponsive: Record<string, any> = {};
+                for (const [key, value] of Object.entries(responsiveGuidance)) {
+                    if (key.toLowerCase().includes(responsiveCategory.toLowerCase())) {
+                        filteredResponsive[key] = value;
+                    }
+                }
+                return {
+                    content: [{ type: "text", text: JSON.stringify({ filtered: responsiveCategory, guidance: filteredResponsive }, null, 2) }],
+                };
+            }
             return {
                 content: [{ type: "text", text: JSON.stringify(responsiveGuidance, null, 2) }],
             };
         
         case "get_accessibility_guidance":
+            const a11yCategory = (args as any)?.category;
+            if (a11yCategory) {
+                const filteredA11y: Record<string, any> = {};
+                for (const [key, value] of Object.entries(accessibilityGuidance)) {
+                    if (key.toLowerCase().includes(a11yCategory.toLowerCase())) {
+                        filteredA11y[key] = value;
+                    }
+                }
+                return {
+                    content: [{ type: "text", text: JSON.stringify({ filtered: a11yCategory, guidance: filteredA11y }, null, 2) }],
+                };
+            }
             return {
                 content: [{ type: "text", text: JSON.stringify(accessibilityGuidance, null, 2) }],
             };
 
         case "get_modern_trends":
+            const trendsCategory = (args as any)?.category;
+            if (trendsCategory) {
+                const filteredTrends: Record<string, any> = {};
+                for (const [key, value] of Object.entries(modernTrends)) {
+                    if (key.toLowerCase().includes(trendsCategory.toLowerCase())) {
+                        filteredTrends[key] = value;
+                    }
+                }
+                return {
+                    content: [{ type: "text", text: JSON.stringify({ filtered: trendsCategory, trends: filteredTrends }, null, 2) }],
+                };
+            }
             return {
                 content: [{ type: "text", text: JSON.stringify(modernTrends, null, 2) }],
             };
             
         case "get_animation_guidance":
+            const animationCategory = (args as any)?.category;
+            if (animationCategory) {
+                const filteredAnimation: Record<string, any> = {};
+                for (const [key, value] of Object.entries(animationGuidance)) {
+                    if (key.toLowerCase().includes(animationCategory.toLowerCase())) {
+                        filteredAnimation[key] = value;
+                    }
+                }
+                return {
+                    content: [{ type: "text", text: JSON.stringify({ filtered: animationCategory, guidance: filteredAnimation }, null, 2) }],
+                };
+            }
             return {
                 content: [{ type: "text", text: JSON.stringify(animationGuidance, null, 2) }],
             };
 
         case "get_holistic_design_review":
-            // Returns a consolidated view of keys to check
+            const reviewCategory = (args as any)?.category;
             const checklist = {
                 principles: designPrinciples.map(p => p.principle),
                 layouts: layoutPatterns.map(l => l.name),
                 accessibility: ["Contrast Check", "Focus States", "Semantic HTML"],
                 mobile: ["Touch Targets", "Readable Text", "No Horizontal Scroll"]
             };
+            if (reviewCategory) {
+                if (reviewCategory === "principles") {
+                    return {
+                        content: [{ type: "text", text: JSON.stringify({ filtered: "principles", principles: designPrinciples }, null, 2) }],
+                    };
+                } else if (reviewCategory === "accessibility") {
+                    return {
+                        content: [{ type: "text", text: JSON.stringify({ filtered: "accessibility", guidance: accessibilityGuidance }, null, 2) }],
+                    };
+                } else if (reviewCategory === "responsive") {
+                    return {
+                        content: [{ type: "text", text: JSON.stringify({ filtered: "responsive", guidance: responsiveGuidance }, null, 2) }],
+                    };
+                } else if (reviewCategory === "typography") {
+                    return {
+                        content: [{ type: "text", text: JSON.stringify({ filtered: "typography", guidance: typographyGuidance }, null, 2) }],
+                    };
+                } else if (reviewCategory === "color") {
+                    return {
+                        content: [{ type: "text", text: JSON.stringify({ filtered: "color", guidance: colorGuidance }, null, 2) }],
+                    };
+                }
+            }
             return {
                 content: [{ type: "text", text: JSON.stringify(checklist, null, 2) }],
             };
